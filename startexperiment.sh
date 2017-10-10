@@ -54,7 +54,7 @@ if [ "$1" == "sarsa" ]; then
     
     
     if [ -z "$6" ]; then
-        ALPHA=1
+        ALPHA=0.5
     else 
         ALPHA=$6
     fi
@@ -62,7 +62,7 @@ if [ "$1" == "sarsa" ]; then
     
     
     if [ -z "$7" ]; then
-        LAMBDA=0.0
+        LAMBDA=0.9
     else 
         LAMBDA=$7
     fi
@@ -78,9 +78,9 @@ if [ "$1" == "sarsa" ]; then
 	for((n=0;n<$N;n++))
 	do
 	    echo "----------------    SARSA $SARSA $n    ------------------"
-	    python3 ./server/server.py -port $((5300+$n)) -i $INSTANCE -rs $n -ne $NE -q | tee "results/sarsa/instance_${INSTANCE}_${TRACE}_lambda_${LAMBDA}_rs_${n}.txt" &
+	    python3 ./server/server.py -port $((5000+$n)) -i $INSTANCE -rs $n -ne $NE -q | tee "results/sarsa/instance_${INSTANCE}_${TRACE}_lambda_${LAMBDA}_rs_${n}.txt" &
 	    sleep 1
-	    python3 ./client/client.py -port $((5300+$n)) -rs $n -gamma $GAMMA -algo sarsa -lambda $LAMBDA -trace $TRACE -a $ALPHA
+	    python3 ./client/client.py -port $((5000+$n)) -rs $n -gamma $GAMMA -algo sarsa -lambda $LAMBDA -trace $TRACE -a $ALPHA
 	done
 #	for((n=0;n<10;n++))
 #	do
@@ -122,14 +122,14 @@ elif [ "$1" == "ql" ]; then
     
     
     if [ -z "$5" ]; then
-        GAMMA=0.9
+        GAMMA=0.95
     else 
         GAMMA=$5
     fi
     
     
     if [ -z "$6" ]; then
-        ALPHA=1
+        ALPHA=0.9
     else 
         ALPHA=$6
     fi
@@ -138,10 +138,10 @@ elif [ "$1" == "ql" ]; then
 	for((n=0;n<$N;n++))
 	do
 	    echo "----------------    Q Learning $n    ------------------"
-	    python3 ./server/server.py -port $((7110+$n)) -i $INSTANCE -rs $n -ne $NE -q | tee "results/ql/instance_${INSTANCE}_gamma_${GAMMA}_rs_${n}.txt" &
+	    python3 ./server/server.py -port $((7010+$n)) -i $INSTANCE -rs $n -ne $NE -q | tee "results/ql/instance_${INSTANCE}_gamma_${GAMMA}_rs_${n}.txt" &
 
 	    sleep 1
-	    python3 ./client/client.py -port $((7110+$n)) -rs $n -gamma $GAMMA -algo ql -a $ALPHA
+	    python3 ./client/client.py -port $((7010+$n)) -rs $n -gamma $GAMMA -algo ql -a $ALPHA
 	done
 
 elif [ "$1" == "random" ]; then
@@ -154,7 +154,7 @@ elif [ "$1" == "random" ]; then
 
 	for((n=0;n<10;n++))
 	do
-	    echo "----------------    Q Learning $n    ------------------"
+	    echo "----------------    Random $n    ------------------"
 	    python3 ./server/server.py -port $((4200+$n)) -i $INSTANCE -rs $n -ne $NE -q | tee "results/random/instance_${INSTANCE}_rs_${n}.txt" &
 	    sleep 1
 	    python3 ./client/client.py -port $((4200+$n)) -rs $n -gamma $GAMMA -algo random -a $ALPHA

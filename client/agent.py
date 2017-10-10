@@ -56,6 +56,8 @@ class SarsaAgent:
         self.Q = np.random.rand(numStates, 4)
         self.e = np.zeros((numStates, 4))
         self.alpha = alpha
+        self.alpha_ = alpha
+        self.alpha_min = 0.3 
         self.eps = 0.8
         self.cumulative=False
         if trace == 'accum':
@@ -67,7 +69,8 @@ class SarsaAgent:
         self.gamma = gamma
         self.lamb = lamb
         self.randomseed = randomseed
-
+        self.numEpisodes = 0
+        self.annealAlpha = False
 
     def getAction(self, state = None, getold = True, getVal=True):
     
@@ -101,6 +104,7 @@ class SarsaAgent:
     def observe(self, newState, reward, event):
         # we have new state and reward
         # use epsil
+        self.numEpisodes+=1
         s = self.currState
         a = self.currAction
         s_ = newState
@@ -118,12 +122,18 @@ class SarsaAgent:
         self.currState = s_
         self.currAction = a_        
         
+
+        # anneal alpha 
+        if self.annealAlpha: 
+            self.alpha = max(self.alpha_min, self.alpha - 0.0001)
+
         # only proceed if event is continue
         if event != 'continue' :
             # reset variables its start of a new episode 
             self.e =  np.zeros((self.numStates, 4))
             self.currState = np.random.randint(self.numStates)
             self.currAction = self.getAction(getold=False, getVal=False)
+            self.alpha = self.alpha_
             return
         
 

@@ -9,7 +9,7 @@ do
     for l in ${lambdas[*]}; 
     do
         echo "Started Lambda = ${l} "
-        bash startexperiment.sh sarsa 50 500 ${i} 0.95 0.9 ${l} accum 
+        bash startexperiment.sh sarsa 50 500 ${i} 0.9 0.5 ${l} accum
         echo "Ended Lambda = ${l} "
     done
     echo "Ended Sarsa instance {$i}"
